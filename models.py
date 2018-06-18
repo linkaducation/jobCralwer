@@ -22,6 +22,7 @@ class Company(BaseModel):
     category = CharField(null=True)
     position = CharField(null=True)
     description = TextField(null=True)
+    uniqueId = CharField(null=False)
 
 
 class Job(BaseModel):
