@@ -15,10 +15,9 @@ class BaseModel(Model):
 
 
 class Company(BaseModel):
-    id = IntegerField(null=False)
     name = CharField(null=False)
     scale = CharField(null=True)
-    nature = CharField(null=False)
+    nature = CharField(null=True)
     category = CharField(null=True)
     position = CharField(null=True)
     description = TextField(null=True)
@@ -26,7 +25,6 @@ class Company(BaseModel):
 
 
 class Job(BaseModel):
-    id = IntegerField(null=False)
     company = ForeignKeyField(Company)
     name = CharField(null=False)
     city = CharField(null=False)
@@ -46,7 +44,6 @@ class Job(BaseModel):
 
 
 class Task(BaseModel):
-    id = IntegerField(null=False)
     site = CharField(null=False)
     jobName = CharField(null=False)
     city = CharField(null=True)

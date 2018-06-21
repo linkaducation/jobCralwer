@@ -32,15 +32,18 @@ class _51JobCrawler(BaseCrawler):
             except Job.DoesNotExist:
                 pass
             job_url = get_simple_dom(item, './/p[@class="t1"]/sapn/a/@href')
+            job_name = get_simple_dom(item, './/p[@class="t1"]/sapn/a/@title')
             company_url = get_simple_dom(item, './/span[@class="t2"]/a/@href')
-            unique_id = self.get_company_unique_id(company_url)
-            if not unique_id:
+            company_unique_id = self.get_company_unique_id(company_url)
+            if not company_unique_id:
                 continue
             try:
-                company = Company.get(Company.uniqueId == unique_id)
+                company = Company.get(Company.uniqueId == company_unique_id)
+                company_id = company.id
             except Company.DoesNotExist:
-                res = self.send_requests(url=company_url)
-                company_id = self.extract_company_info(res)
+                company_name = get_simple_dom(item, './/span[@class="t2"]/a/@title')
+                position = get_simple_dom(item, './/span[@class="t3"]/text()')
+                company_id = self.extract_company_info(company_url, company_name, position)
 
 
     def get_total_page_by_document(self, document):
@@ -134,9 +137,34 @@ class _51JobCrawler(BaseCrawler):
         raw_unique = re.findall('/.*?(\d+).html', company_url)
         return raw_unique[0] if raw_unique else None
 
-    @staticmethod
-    def extract_company_info(res):
+    def extract_company_info(self, company_url, company_name, position):
+        res = self.send_requests(company_url)
         document = get_document(res)
         name = get_simple_dom(document, './/div[@class="tHeader tHCop"]/div[@class="in img_on"]/h1/@title')
+        # 使用前程无忧搭建自己公司门户的公司
         if not name:
-            return None
+            return Company.insert(name=company_name,
+                                  uniqueId=self.get_company_unique_id(company_url),
+                                  position=position).execute()
+        # 普通公司
+        base_info = get_simple_dom(document, './/p[@class="ltype"]/text()', '')
+        infos = base_info.split('|')
+        nature = infos[0].strip() if len(infos) > 0 else ''
+        scale = infos[1].strip() if len(infos) > 1 else ''
+        category = infos[2].strip() if len(infos) > 2 else ''
+        position_info = get_richtext(document, './/div[@class="inbox"]/p[@class="fp"]/')
+        position_info = position_info.strip().replace('公司地址：', '')
+        position = re.sub('(\(邮编：.*\))', '', position_info)
+        position = position.strip() if position else ''
+        description = get_richtext(document, './/div[@class="con_txt"]')
+        unique_id = self.get_company_unique_id(company_url)
+        return Company.insert(name=name,
+                              nature=nature,
+                              scale=scale,
+                              category=category,
+                              position=position,
+                              description=description,
+                              uniqueId=unique_id).execute()
+
+    def extrac_job_info(self, job_url):
+        res = self.send_requests(job_url)

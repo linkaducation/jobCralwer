@@ -46,5 +46,6 @@ class BaseCrawler(object):
             res = self.session.post(url=url, data=form_data, timeout=20)
         else:
             res = self.session.get(url=url, timeout=20)
-        res.encoding = 'GBK'
+        if self.task.site == '51job':
+            res.encoding = 'GBK'
         return res
