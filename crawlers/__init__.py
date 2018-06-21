@@ -13,3 +13,4 @@ def run_crawler(task):
     Task.update(finished=True,
                 finishedDate=datetime.datetime.now()
                 ).where(Task.id == task.id).execute()
+    print('Task is Done')

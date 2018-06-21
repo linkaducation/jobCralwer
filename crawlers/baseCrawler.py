@@ -42,10 +42,13 @@ class BaseCrawler(object):
         :param url:
         :return:
         """
-        if form_data:
-            res = self.session.post(url=url, data=form_data, timeout=20)
-        else:
-            res = self.session.get(url=url, timeout=20)
+        try:
+            if form_data:
+                res = self.session.post(url=url, data=form_data, timeout=20)
+            else:
+                res = self.session.get(url=url, timeout=20)
+        except:
+            return None
         if self.task.site == '51job':
             res.encoding = 'GBK'
         return res

@@ -9,6 +9,7 @@ app = Flask(__name__)
 def start_crawler_job():
     task = get_task()
     run_crawler(task)
+    return 'OK'
 
 
 def get_task():

@@ -43,16 +43,6 @@ def get_richtext_dom(node):
     return ''
 
 
-def remove_tags(text):
-    """
-    删除文本中的tag节点
-    :param text:
-    :return:
-    """
-    document = etree.fromstring(text)
-    return document.text_content()
-
-
 def get_richtext(dom, xpath):
     """
     根据xpath获取dom节点的值
@@ -62,7 +52,7 @@ def get_richtext(dom, xpath):
     """
     _ = dom.xpath(xpath)
     if len(_) > 0:
-        result = remove_tags(etree.tostring(_[0])).strip()
+        result = get_richtext_dom(_[0])
     else:
         result = ''
     return result
