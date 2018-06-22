@@ -12,22 +12,6 @@ class BaseCrawler(object):
         self.session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 "
                                                    "(KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"})
 
-    def get_total_page_by_document(self, document):
-        """
-        根据传入放入document获取total_page
-        :param document:
-        :return:
-        """
-        raise NotImplementedError
-
-    def get_total_page_by_html(self, html):
-        """
-        根据传入的html获取total_page
-        :param html:
-        :return:
-        """
-        raise NotImplementedError
-
     def start(self):
         """
         爬虫开始

@@ -70,7 +70,8 @@ class _51JobCrawler(BaseCrawler):
             return self.get_total_page_by_html(page_text)
         return None
 
-    def get_total_page_by_html(self, html):
+    @staticmethod
+    def get_total_page_by_html(html):
         page_info = re.findall('共(\d+)页，到第', html)
         return page_info[0] if page_info else None
 
