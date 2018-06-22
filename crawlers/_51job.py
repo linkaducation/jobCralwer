@@ -85,9 +85,9 @@ class _51JobCrawler(BaseCrawler):
 
     def init_work_year(self):
         if self.task.workYear:
-            work_year = int(self.task.workYear)
+            work_year = self.task.workYear
             for year, code in work_year_code.items():
-                if work_year <= int(year):
+                if work_year <= year:
                     self.base_url = self.base_url.replace('work_year', code)
                     return
             # '05'表示10年以上工作经验
@@ -167,7 +167,8 @@ class _51JobCrawler(BaseCrawler):
             return Company.insert(name=company_name,
                                   uniqueId=self.get_company_unique_id(company_url),
                                   position=position,
-                                  companyUrl=company_url).execute()
+                                  companyUrl=company_url,
+                                  site=self.task.site).execute()
         # 普通公司
         base_info = get_simple_dom(document, './/p[@class="ltype"]/text()', '')
         infos = base_info.split('|')
@@ -186,7 +187,8 @@ class _51JobCrawler(BaseCrawler):
                               position=position,
                               description=description,
                               uniqueId=self.get_company_unique_id(company_url),
-                              companyUrl=company_url).execute()
+                              companyUrl=company_url,
+                              site=self.task.site).execute()
 
     def extract_job_info(self, job_url, job_id, company_id):
         if not job_url:
@@ -269,4 +271,5 @@ class _51JobCrawler(BaseCrawler):
                    position=position,
                    uniqueId=job_id,
                    jobUrl=job_url,
-                   area=area).execute()
+                   area=area,
+                   taskId=self.task.id).execute()

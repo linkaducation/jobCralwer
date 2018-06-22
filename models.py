@@ -2,7 +2,7 @@ from peewee import *
 
 host = '127.0.0.1'
 user = 'root'
-password = '123456'
+password = '940425'
 port = 3306
 
 db = MySQLDatabase('job_crawler', **{'host': host, 'user': user, 'password': password, 'port': port})
@@ -15,6 +15,7 @@ class BaseModel(Model):
 
 
 class Company(BaseModel):
+    site = CharField(null=False)
     name = CharField(null=False)
     scale = CharField(null=True)
     nature = CharField(null=True)
@@ -42,6 +43,7 @@ class Job(BaseModel):
     position = CharField(null=True)
     uniqueId = CharField(null=False)
     jobUrl = CharField(null=False)
+    taskId = IntegerField(null=False)
 
 
 class Task(BaseModel):

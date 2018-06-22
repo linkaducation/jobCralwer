@@ -8,7 +8,8 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def start_crawler_job():
     task = get_task()
-    run_crawler(task)
+    if not task.finished:
+        run_crawler(task)
     return 'OK'
 
 
